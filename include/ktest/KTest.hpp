@@ -5,9 +5,9 @@
 #include <iostream>
 #include <string>
 
-#define TEST_CASE(message, test) TEST_CASE2(message, test, __COUNTER__)
+#define TEST_CASE(message, test) void test; TEST_CASE2(message, test, __COUNTER__); void test()
 #define TEST_CASE2(message, test, number) TEST_CASE3(message, test, number)
-#define TEST_CASE3(message, test, number) static TestCase _testCase_##number(message, test);
+#define TEST_CASE3(message, test, number) static TestCase _testCase_##number(message, test)
 
 namespace KTest {
 	struct TestCaseAssertionFailed : public std::exception {
