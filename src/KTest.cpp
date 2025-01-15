@@ -2,13 +2,13 @@
 
 #include <memory>
 
-std::unique_ptr<std::vector<KTest::TestCase>> TestCases;
+std::unique_ptr<std::vector<KTest::TestCase>> testCases;
 
 KTest::TestCase::TestCase(const char* name, std::function<void()> test) : test(test), name(name) {
-	if(!TestCases) {
-		TestCases = std::make_unique<std::vector<TestCase>>();
+	if(!testCases) {
+		testCases = std::make_unique<std::vector<TestCase>>();
 	}
-	TestCases->push_back(*this);
+	testCases->push_back(*this);
 }
 
 bool KTest::TestCase::Run() const {
@@ -25,13 +25,15 @@ bool KTest::TestCase::Run() const {
 
 void KTest::TestCase::RunAll() {
 	int nSuccess = 0;
-	for (auto& testCase : *TestCases) {
-		bool res = testCase.Run();
-		nSuccess += res;
+	if(testCases){
+		for (auto& testCase : *testCases) {
+			bool res = testCase.Run();
+			nSuccess += res;
+		}
 	}
-	std::cout << "Passed: " << nSuccess << "/" << TestCases->size() << std::endl;
+	std::cout << "Passed: " << nSuccess << "/" << testCases->size() << std::endl;
 }
 
 size_t KTest::TestCase::NumTests() {
-	return TestCases->size();
+	return testCases ? testCases->size() : 0;
 }
