@@ -31,7 +31,7 @@ void KTest::TestCase::RunAll() {
 			nSuccess += res;
 		}
 	}
-	std::cout << "Passed: " << nSuccess << "/" << testCases->size() << std::endl;
+	std::cout << "Passed: " << nSuccess << "/" << NumTests() << std::endl;
 }
 
 size_t KTest::TestCase::NumTests() {
