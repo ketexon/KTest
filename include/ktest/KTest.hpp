@@ -4,33 +4,32 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 #define TEST_CASE(message, test) void test(); TEST_CASE2(message, test, __COUNTER__); void test()
 #define TEST_CASE2(message, test, number) TEST_CASE3(message, test, number)
 #define TEST_CASE3(message, test, number) static TestCase _testCase_##number(message, test)
 
 namespace KTest {
-	struct TestCaseAssertionFailed : public std::exception {
-		TestCaseAssertionFailed() : std::exception() {}
-		TestCaseAssertionFailed(const char* message) : std::exception(message) {}
+	struct TestCaseAssertionFailed : public std::runtime_error {
+		TestCaseAssertionFailed(const char* message) : std::runtime_error(message) {}
 	};
 
 	struct TestCaseExpectedException : public TestCaseAssertionFailed {
 	private:
-		std::string message;
-
-	public:
-		TestCaseExpectedException(const char* m, std::string expected, std::string got) {
-			message = m;
+		static const char* MakeMessage(const char* m, std::string expected, std::string got) {
+			std::string message = m;
 			message += "\nExpected: ";
 			message += expected;
 			message += "\nGot: ";
 			message += got;
+			return m;
 		}
 
-		const char* what() const noexcept override {
-			return message.c_str();
-		}
+	public:
+		TestCaseExpectedException(const char* m, std::string expected, std::string got)
+			: TestCaseAssertionFailed(MakeMessage(m, expected, got))
+		{}
 	};
 
 	class TestCase {
