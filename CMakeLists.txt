@@ -2,6 +2,19 @@ cmake_minimum_required(VERSION 3.30)
 
 project(KTest)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+	set(KTEST_STANDALONE ON)
+else()
+	set(KTEST_STANDALONE OFF)
+endif()
+
+if(KTEST_STANDALONE)
+	set(KTEST_BUILD_TESTS ON CACHE BOOL "Build tests")
+else()
+	set(KTEST_BUILD_TESTS OFF CACHE BOOL "Build tests")
+endif()
+
+
 add_library(
 	KTest
 	STATIC
@@ -20,16 +33,20 @@ target_include_directories(
 	include
 )
 
-set_target_properties(
-	KTest
-	PROPERTIES
-	CXX_STANDARD 20
-	CXX_STANDARD_REQUIRED ON
-	CXX_EXTENSIONS OFF
-)
-
 target_link_libraries(
 	KTestWithMain
 	PUBLIC
 	KTest
 )
+
+set_target_properties(
+	KTest KTestWithMain
+	PROPERTIES
+	CXX_STANDARD 14
+	CXX_STANDARD_REQUIRED ON
+	CXX_EXTENSIONS OFF
+)
+
+if(KTEST_BUILD_TESTS)
+	add_subdirectory(unit)
+endif()

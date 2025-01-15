@@ -37,3 +37,18 @@ void KTest::TestCase::RunAll() {
 size_t KTest::TestCase::NumTests() {
 	return testCases ? testCases->size() : 0;
 }
+
+KTest::TestCaseAssertionFailed::TestCaseAssertionFailed(std::string message) : std::runtime_error(message) {}
+
+std::string MakeTestCaseExpectedExceptionMessage(std::string m, std::string actual, std::string expected) {
+	std::string message = m;
+	message += "\nActual: ";
+	message += actual;
+	message += "\nExpected: ";
+	message += expected;
+	return message;
+}
+
+KTest::TestCaseExpectedException::TestCaseExpectedException(std::string m, std::string actual, std::string expected)
+	: TestCaseAssertionFailed(MakeTestCaseExpectedExceptionMessage(m, actual, expected))
+{}
