@@ -2,6 +2,7 @@ add_executable(
 	KTestUnit
 	Factorial.cpp
 	CustomType.cpp
+	Printing.cpp
 )
 
 target_link_libraries(
@@ -13,7 +14,7 @@ target_link_libraries(
 set_target_properties(
 	KTestUnit
 	PROPERTIES
-	CXX_STANDARD 14
+	CXX_STANDARD 17
 	CXX_STANDARD_REQUIRED ON
 	CXX_EXTENSIONS OFF
 )

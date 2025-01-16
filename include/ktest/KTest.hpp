@@ -6,8 +6,12 @@
 #include <string>
 #include <stdexcept>
 #include <sstream>
+#include <optional>
 
-#define TEST_CASE(message, test) void test(); static ::KTest::TestCase _TestCase##test(message, test); void test()
+#define TEST_CASE(message, test_id) \
+	void test_id(::KTest::TestContext&); \
+	static ::KTest::TestCase _TestCase ## test_id(message, test_id, #test_id); \
+	void test_id(::KTest::TestContext& test)
 
 namespace KTest {
 	struct TestCaseAssertionFailed : public std::runtime_error {
@@ -18,23 +22,18 @@ namespace KTest {
 		TestCaseExpectedException(std::string m, std::string actual, std::string expected);
 	};
 
-	class TestCase {
-		std::function<void()> test;
-		const char* name;
-
+	class TestContext {
 	public:
-		TestCase(const char* name, std::function<void()> test);
-		bool Run() const;
-		static void RunAll();
+		std::stringstream cout;
 
-		static constexpr void Assert(bool condition, const char* message) {
+		constexpr void Assert(bool condition, const char* message) {
 			if (!condition) {
 				throw TestCaseAssertionFailed(message);
 			}
 		}
 
 		template<class T, class U>
-		static constexpr void AssertEq(const T& actual, const U& expected, const char* message) {
+		constexpr void AssertEq(const T& actual, const U& expected, const char* message) {
 			if (!(actual == expected)) {
 				std::stringstream actualSS, expectedSS;
 				actualSS << actual;
@@ -42,7 +41,37 @@ namespace KTest {
 				throw TestCaseExpectedException(message, actualSS.str(), expectedSS.str());
 			}
 		}
+	};
+
+	struct TestCaseOptions {
+		bool printOutputOnFailure = true;
+		bool printOutputOnSuccess = false;
+		bool printSuccessfulTestCases = true;
+	};
+
+	class TestCase {
+	public:
+		using TestFunction = std::function<void(TestContext&)>;
+
+	private:
+		TestFunction test;
+		std::string name;
+		std::string id;
+
+	public:
+		using TestFunction = std::function<void(TestContext&)>;
+
+		TestCase(std::string name, TestFunction test, std::string id);
+		bool Run(TestCaseOptions = {}) const;
+		static void RunAll(TestCaseOptions = {});
+		static void RunSome(std::vector<std::string>, TestCaseOptions = {});
 
 		static size_t NumTests();
+		static bool Exists(std::string id);
+		static std::optional<const TestCase*> Get(std::string id);
+		static const TestCase* Get(size_t i);
+
+		constexpr const std::string& Name() const { return name; }
+		constexpr const std::string& ID() const { return id; }
 	};
 }
