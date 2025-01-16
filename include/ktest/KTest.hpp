@@ -26,14 +26,10 @@ namespace KTest {
 	public:
 		std::stringstream cout;
 
-		constexpr void Assert(bool condition, const char* message) {
-			if (!condition) {
-				throw TestCaseAssertionFailed(message);
-			}
-		}
+		void Assert(bool condition, std::string message);
 
 		template<class T, class U>
-		constexpr void AssertEq(const T& actual, const U& expected, const char* message) {
+		constexpr void AssertEq(const T& actual, const U& expected, std::string message) {
 			if (!(actual == expected)) {
 				std::stringstream actualSS, expectedSS;
 				actualSS << actual;

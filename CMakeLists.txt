@@ -18,7 +18,8 @@ endif()
 add_library(
 	KTest
 	STATIC
-	src/KTest.cpp include/ktest/KTest.hpp
+	include/ktest/KTest.hpp src/KTest.cpp
+	src/Assert.cpp
 )
 
 add_library(
