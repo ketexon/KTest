@@ -29,13 +29,42 @@ namespace KTest {
 		void Assert(bool condition, std::string message);
 
 		template<class T, class U>
-		constexpr void AssertEq(const T& actual, const U& expected, std::string message) {
-			if (!(actual == expected)) {
+		void Expect(bool condition, const T& actual, const U& expected, std::string message) {
+			if (!condition) {
 				std::stringstream actualSS, expectedSS;
 				actualSS << actual;
 				expectedSS << expected;
 				throw TestCaseExpectedException(message, actualSS.str(), expectedSS.str());
 			}
+		}
+
+		template<class T, class U>
+		constexpr void AssertEq(const T& actual, const U& expected, std::string message) {
+			Expect(actual == expected, actual, expected, message);
+		}
+
+		template<class T, class U>
+		constexpr void AssertNeq(const T& actual, const U& expectedNot, std::string message) {
+			Expect(
+				!(actual == expectedNot),
+				actual,
+				(std::stringstream{} << "Not " << expectedNot).str(),
+				message
+			);
+		}
+
+		template<class T, class U>
+		constexpr void AssertApprox(
+			const T& actual,
+			const U& expected,
+			std::string message,
+			decltype(std::abs(actual - expected)) epsilon = 1e-6f
+		) {
+			Expect(
+				actual == expected || std::abs(actual - expected) < epsilon,
+				actual, expected,
+				message
+			);
 		}
 	};
 
