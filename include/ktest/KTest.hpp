@@ -84,8 +84,6 @@ namespace KTest {
 		std::string id;
 
 	public:
-		using TestFunction = std::function<void(TestContext&)>;
-
 		TestCase(std::string name, TestFunction test, std::string id);
 		bool Run(TestCaseOptions = {}) const;
 		static void RunAll(TestCaseOptions = {});
