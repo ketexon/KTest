@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <optional>
 #include <map>
+#include <algorithm>
 
 static const char* greenText = "\x1b[0;32m";
 static const char* clearStyle = "\x1b[0m";
