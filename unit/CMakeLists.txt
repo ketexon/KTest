@@ -20,8 +20,16 @@ set_target_properties(
 	CXX_EXTENSIONS OFF
 )
 
-target_compile_options(
-	KTestUnit
-	PRIVATE
-	-Od
-)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	target_compile_options(
+		KTestUnit
+		PRIVATE
+		-O0
+	)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	target_compile_options(
+		KTestUnit
+		PRIVATE
+		-Od
+	)
+endif()

@@ -39,12 +39,12 @@ namespace KTest {
 		}
 
 		template<class T, class U>
-		constexpr void AssertEq(const T& actual, const U& expected, std::string message) {
+		void AssertEq(const T& actual, const U& expected, std::string message) {
 			Expect(actual == expected, actual, expected, message);
 		}
 
 		template<class T, class U>
-		constexpr void AssertNeq(const T& actual, const U& expectedNot, std::string message) {
+		void AssertNeq(const T& actual, const U& expectedNot, std::string message) {
 			Expect(
 				!(actual == expectedNot),
 				actual,
@@ -54,7 +54,7 @@ namespace KTest {
 		}
 
 		template<class T, class U>
-		constexpr void AssertApprox(
+		void AssertApprox(
 			const T& actual,
 			const U& expected,
 			std::string message,
